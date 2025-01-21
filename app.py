@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import plotly.express as px
 from flask import Flask
+from subprocess import call
 from dash import Dash, dcc, html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input
@@ -13,11 +14,13 @@ app.title = "PiChamber Dashboard"
 
 controls = dbc.Card(
     [
-
-	html.Div(
+    
+    html.Div(
             [
-                dbc.Button("Refresh", id="refresh", color="primary",
-                           style={"margin-left": "15px"})
+                dbc.Button(
+                    "Shutdown", id="shutdown", color="primary",
+                    style={"margin-left": "15px"}
+                )
             ]
         )
     ]
@@ -30,8 +33,8 @@ controls = dbc.Card(
 plots = dbc.Card(
     [
         html.Div(dcc.Graph(id="co2-chart")),
-	html.Div(dcc.Graph(id="temp-chart")),
-	html.Div(dcc.Graph(id="humid-chart"))
+        html.Div(dcc.Graph(id="temp-chart")),
+        html.Div(dcc.Graph(id="humid-chart"))
     ],
     body=True
 )
@@ -74,11 +77,10 @@ app.layout = dbc.Container(
         Output("file-text", "children")
     ],
     [
-        Input("refresh", "n_clicks"),
         Input("interval-component", "n_intervals")
     ]
 )
-def refresh(n, n_interval):
+def refresh(n_interval):
     """Refresh app plot."""
     # Get the results folder
     res_fnames = os.listdir("Results")
@@ -105,6 +107,15 @@ def refresh(n, n_interval):
     #time_fig.update_yaxes(range=limits)
 
     return [co2_fig, temp_fig, humid_fig, status, fname]
+    
+@app.callback(
+    [],
+    [
+        Input("shutdown", "n_clicks"),
+    ]
+)
+def shutdown_pi(n):
+    call("sudo poweroff", shell=True)
 
 if __name__ == "__main__":
-    app.run_server(debug=True, host='0.0.0.0', port=4000)
+    app.run_server(debug=True, host='0.0.0.0', port=8050)
