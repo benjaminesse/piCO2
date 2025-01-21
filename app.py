@@ -13,7 +13,7 @@ app.title = "PiChamber Dashboard"
 
 controls = dbc.Card(
     [
-	
+
 	html.Div(
             [
                 dbc.Button("Refresh", id="refresh", color="primary",
@@ -40,6 +40,7 @@ app.layout = dbc.Container(
     [
         html.H1("PiChamber Dashboard"),
         html.Div([dbc.Label("Status")], id="status-text"),
+        html.Div([dbc.Label("-")], id="file-text"),
         html.Hr(),
         html.Div(
             [
@@ -70,6 +71,7 @@ app.layout = dbc.Container(
         Output("temp-chart", "figure"),
         Output("humid-chart", "figure"),
         Output("status-text", "children")
+        Output("file-text", "children")
     ],
     [
         Input("refresh", "n_clicks"),
@@ -102,7 +104,7 @@ def refresh(n, n_interval):
     humid_fig = px.line(df, x="Time", y="Humidity (%)")
     #time_fig.update_yaxes(range=limits)
 
-    return [co2_fig, temp_fig, humid_fig, status]
+    return [co2_fig, temp_fig, humid_fig, status, fname]
 
 if __name__ == "__main__":
     app.run_server(debug=True, host='0.0.0.0', port=4000)
