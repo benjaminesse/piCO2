@@ -14,7 +14,7 @@ app.title = "PiChamber Dashboard"
 
 controls = dbc.Card(
     [
-    
+
     html.Div(
             [
                 dbc.Button(
@@ -93,7 +93,7 @@ def refresh(n_interval):
 
     # Read in the results
     try:
-        df = pd.read_csv(f"Results/{fname}", parse_dates=True)
+        df = pd.read_csv(f"Results/{fname}", parse_dates=True, skiprows=3)
         df = df.loc[-100:]
     except FileNotFoundError:
         # If the file is not found, return an empty DataFrame
@@ -107,7 +107,7 @@ def refresh(n_interval):
     #time_fig.update_yaxes(range=limits)
 
     return [co2_fig, temp_fig, humid_fig, status, fname]
-    
+
 @app.callback(
     [],
     [
