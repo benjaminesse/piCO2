@@ -70,7 +70,7 @@ app.layout = dbc.Container(
         Output("co2-chart", "figure"),
         Output("temp-chart", "figure"),
         Output("humid-chart", "figure"),
-        Output("status-text", "children")
+        Output("status-text", "children"),
         Output("file-text", "children")
     ],
     [
