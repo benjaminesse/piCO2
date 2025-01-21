@@ -28,11 +28,11 @@ try:
     i2c = board.I2C()
     scd4x = adafruit_scd4x.SCD4X(i2c)
     logger.info(f"Serial number: {[hex(i) for i in scd4x.serial_number]}")
-    
+
     scd4x.self_calibration_enabled = False
     calib_flag = scd4x.self_calibration_enabled
     logger.info(f'Calibration enabled: {calib_flag}')
-    
+
     logger.info('Running self test')
     print(scd4x.self_test())
 
@@ -45,7 +45,7 @@ try:
         os.makedirs('Results')
 
     # Create the output file
-    outfname = f'Results/{now_time}_co2.csv'
+    outfname = f'Results/{now_time.strftime("%Y%m%dT%H%M%S")}_co2.csv'
     with open(outfname, 'w') as w:
         w.write('Time,CO2 (ppm),Temperature (C),Humidity (%)\n')
 
@@ -56,8 +56,9 @@ try:
                 w.write('Measuring')
             with open(outfname, 'a') as w:
                 w.write(
-                    f'{datetime.now()},{scd4x.CO2},{scd4x.temperature}'
-                    f',{scd4x.relative_humidity}\n'
+                    f'{datetime.now().strftime("%Y-%m-%dT%H:%M:%S")},'
+                    f'{scd4x.CO2},{scd4x.temperature},'
+                    f'{scd4x.relative_humidity}\n'
                 )
             logger.info("Measurement recieved")
         time.sleep(0.1)
