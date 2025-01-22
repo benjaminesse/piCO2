@@ -23,7 +23,7 @@ source venv/bin/activate
 Install the required libraries
 
 ```
-pip install numpy pandas plotly dash dash-bootstrap-components adafruit-circuitpython-scd4x gunicorn
+pip install numpy pandas plotly dash dash-bootstrap-components adafruit-circuitpython-scd4x utm gunicorn
 ```
 
 Active I2C connections from the terminal using
