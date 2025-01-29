@@ -19,19 +19,7 @@ class GPS():
                  parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
                  bytesize=serial.EIGHTBITS):
         """Initialize."""
-        # Select the comport to use for the GPS
-        if comport is None:
-            try:
-                comport = serial.tools.list_ports.comports()[0].device
-            except IndexError:
-                logger.warning('GPS not connected: no serial port detected!')
-                return
-
-        # Connect to the gps
-        self.serial_port = serial.Serial(comport, baudrate=baudrate,
-                                         parity=parity, stopbits=stopbits,
-                                         bytesize=bytesize)
-
+        
         self.filename = filename
         self.timestamp = None
         self.datestamp = None
@@ -39,11 +27,27 @@ class GPS():
         self.lon = np.nan
         self.alt = np.nan
         self.utm_coords = None
-        self.running = True
+        self.running = False
         self.acquired = False
+
+        # Select the comport to use for the GPS
+        if comport is None:
+            try:
+                comport = serial.tools.list_ports.comports()[0].device
+            except IndexError:
+                logger.warning('GPS not connected: no serial port detected!')
+                self.connected = False
+                return
+
+        # Connect to the gps
+        self.serial_port = serial.Serial(comport, baudrate=baudrate,
+                                         parity=parity, stopbits=stopbits,
+                                         bytesize=bytesize)
+        self.connected = True
 
         self.thread = Thread(target=self._updater, daemon=True)
         self.thread.start()
+        self.running = True
 
     def _updater(self):
         while self.running:
